@@ -1,7 +1,42 @@
+const buttons = document.querySelectorAll('button');
+const buttonsDiv = document.querySelector('.buttons');
+const selection = document.querySelector('.selection');
+const score = document.querySelector('.score');
+const result = document.querySelector('.result');
+const begin = document.querySelector('.begin');
+
+
+let humanScore = 0;
+let computerScore = 0;
+
+const againButton = document.createElement('button');
+againButton.textContent = 'PLAY AGAIN'
+againButton.classList.add('again-button');
+
+buttons.forEach(button => button.addEventListener('click', getHumanChoice));
+buttons.forEach(button => button.addEventListener('mousedown', playTransition));
+buttons.forEach(button => button.addEventListener('click', playTransition));
+
+againButton.addEventListener('click', playAgain);
+
+function playTransition(event){
+   event.target.classList.toggle('clicked');
+}
+
+function getHumanChoice(button){
+    begin.style.display = 'none';
+
+    humanChoice = button.target.id;
+
+    computerChoice = getComputerChoice();
+
+    playRound(humanChoice, computerChoice)
+}
+
 function getComputerChoice(){
    random = Math.floor(Math.random() * 3) + 1;
    computerChoice = '';
-   
+
    if(random === 1){
     computerChoice = 'rock';
    } else if(random === 2){
@@ -13,53 +48,92 @@ function getComputerChoice(){
    return computerChoice
 }
 
-function getHumanChoice(){
-    humanChoice = prompt('Choose rock, paper or scissors!').toLowerCase();
+function playAgain(){
+    selection.textContent = '';
+    score.textContent = '';
+    result.textContent = '';
+    begin.style.display = '';
 
-    return humanChoice
+    buttonsDiv.removeChild(againButton);
+    buttons.forEach(button => button.style.display = '');    
+}
+
+function resultColor(color){
+    selection.style.color = `${color}`;
 }
 
 function playRound(humanChoice, computerChoice){
     if(humanChoice === computerChoice){
-        console.log("It's a tie!")
-        return
+        selection.textContent = "It's a tie!";
+        resultColor('black');
     }
 
     if(humanChoice === 'rock'){
         if(computerChoice === 'scissors'){
-            console.log('Human wins! Rock beats scissors.');
+            selection.textContent = 'Human wins this round! Rock beats scissors.';
             humanScore++;
+            resultColor('green');
+
         } else{
-            console.log('Computer wins! Paper beats rock.');
+            selection.textContent = 'Computer wins this round! Paper beats rock.';
             computerScore++;
+            resultColor('red');
+
         }
     } else if(humanChoice === 'paper'){
         if(computerChoice === 'rock'){
-            console.log('Human wins! Paper beats rock.');
+            selection.textContent = 'Human wins this round! Paper beats rock.';
             humanScore++;
+            resultColor('green');
+
         } else{
-            console.log('Computer wins! Scissors beat paper.');
+            selection.textContent = 'Computer wins this round! Scissors beats paper.';
             computerScore++;
+            resultColor('red');
+
         }
     } else{
         if(computerChoice === 'paper'){
-            console.log('Human wins! Scissors beats paper.');
+            selection.textContent = 'Human wins this round! Scissors beats paper.';
             humanScore++;
+            resultColor('green');
+
         } else{
-            console.log('Computer wins! Rock beat paper.');
+            selection.textContent = 'Computer wins this round! Rock beats paper.';
             computerScore++;
+            resultColor('red');
+
         }
+    }
+
+    score.textContent = `Your score: ${humanScore} Computer score: ${computerScore}`;
+
+    if(humanScore === 5 || computerScore === 5){
+        if(humanScore === computerScore){
+            selection.textContent = '';
+            result.textContent = 'YOU HAVE TIED!';
+            result.style.color = 'black';
+
+        } else if(humanScore > computerScore){
+            selection.textContent = '';
+            result.textContent = 'YOU WIN!!!!!';
+            result.style.color = 'green';
+
+        } else {
+            selection.textContent = '';
+            result.textContent = 'The machines have won.';
+            result.style.color = 'red';
+
+        }
+
+        humanScore = 0;
+        computerScore = 0;
+
+        buttons.forEach(button => button.style.display = 'none');
+        buttonsDiv.appendChild(againButton);
+        
+        return
     }
 }
 
-    // if(humanScore === computerScore){
-    //     console.log('YOU HAVE TIED!');
-    // } else if(humanScore > computerScore){
-    //     console.log('YOU WIN!!!!!');
-    // } else {
-    //     console.log('The machines have won.');
-    // }
 
-
-    // console.log(`Human score: ${humanScore}`);
-    // console.log(`Computer score: ${computerScore}`);
